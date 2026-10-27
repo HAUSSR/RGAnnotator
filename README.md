@@ -29,7 +29,7 @@
 
 ```bash
 # clone
-git clone https://github.com/<user>/RGAnnotator.git
+git clone https://github.com/HAUSSR/RGAnnotator.git
 cd RGAnnotator
 
 # install python dependencies

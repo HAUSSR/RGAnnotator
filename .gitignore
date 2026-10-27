@@ -1,0 +1,13 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+
+# extracted BLAST database (regenerated from data/TAIR10_DB_new.tar.gz)
+data/TAIR10_DB/
+
+# analysis outputs
+clockfinder_results/
+tmp_blast_*

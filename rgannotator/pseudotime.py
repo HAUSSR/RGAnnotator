@@ -160,9 +160,9 @@ def plot_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
         width_ratios.append(0.05)
 
     inner = gs_cell.subgridspec(
-        2, len(width_ratios),
-        height_ratios=[20, 1.0], width_ratios=width_ratios,
-        hspace=0.08, wspace=0.02,
+        1, len(width_ratios),
+        width_ratios=width_ratios,
+        wspace=0.02,
     )
 
     col_idx = 0
@@ -172,19 +172,12 @@ def plot_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
         col_idx += 1
 
     ax_hm = fig.add_subplot(inner[0, col_idx])
-    hm_col_idx = col_idx
     col_idx += 1
 
     ax_ann = None
     if has_anno:
         ax_ann = fig.add_subplot(inner[0, col_idx])
         col_idx += 1
-
-    ax_bar = fig.add_subplot(inner[1, hm_col_idx])
-
-    for c in range(len(width_ratios)):
-        if c != hm_col_idx:
-            fig.add_subplot(inner[1, c]).axis("off")
 
     cmap = get_cmap(cmap_name)
     im = ax_hm.imshow(
@@ -201,31 +194,10 @@ def plot_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
     max_ct = 48 if n_cycle == 2 else 24
     tick_times = range(0, max_ct + 1, 6)
     ax_hm.set_xticks([tt / max_ct * (n_cols - 1) for tt in tick_times])
-    ax_hm.set_xticklabels(["CT" + str(tt) for tt in tick_times], fontsize=7)
+    ax_hm.set_xticklabels(["CT" + str(tt) for tt in tick_times], fontsize=8)
     ax_hm.set_xlabel("Circadian Time", fontsize=9)
+    ax_hm.tick_params(length=0)
     for spine in ax_hm.spines.values():
-        spine.set_visible(False)
-
-    # day/night strip under the heatmap
-    ax_bar.set_xlim(0, max_ct)
-    ax_bar.set_ylim(0, 1)
-    ax_bar.set_yticks([])
-    for cycle in range(n_cycle):
-        off = cycle * 24
-        ax_bar.add_patch(Rectangle((off, 0), 12, 1, color="#FFFDE7", alpha=0.8))
-        ax_bar.add_patch(Rectangle((off + 12, 0), 12, 1, color="#E3F2FD", alpha=0.8))
-
-    unique_ct = sorted(set(times_smooth % 24))
-    for cycle in range(n_cycle):
-        off = cycle * 24
-        for ct in unique_ct:
-            ax_bar.scatter(ct + off, 0.5, s=30, c="gray", edgecolors="black",
-                           linewidth=0.4, zorder=3)
-        for ct in [0, 6, 12, 18]:
-            ax_bar.text(ct + off, 0.15, "CT" + str(ct), ha="center", va="center",
-                        fontsize=6, color="dimgray")
-    ax_bar.set_xticks([])
-    for spine in ax_bar.spines.values():
         spine.set_visible(False)
 
     # left-side markers for genes of interest

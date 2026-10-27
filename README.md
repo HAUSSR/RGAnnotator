@@ -6,7 +6,7 @@
 |---|---|---|
 | 1. Identification | `rgannotator identify` | Identify circadian clock gene homologs in any plant genome proteome via reciprocal BLASTP against a curated panel of 49 *Arabidopsis* clock genes |
 | 2. Rhythm analysis | `rgannotator rhythm` | Detect rhythmic expression and estimate phase/amplitude with **JTK_CYCLE** (default, non-parametric) or **Cosinor** (harmonic regression) |
-| 3. Visualization | `rgannotator heatmap` / `radar` / `line` | Publication-ready circadian heatmaps, 24 h radar plots and time-course line plots |
+| 3. Visualization | `rgannotator pseudotime` / `radar` / `line` | Publication-ready circadian pseudotime plots, 24 h radar plots and time-course line plots |
 
 ![modules](example/output/overview_figures.png)
 
@@ -61,7 +61,7 @@ python -m rgannotator rhythm -i expression.csv -o rhythm_jtk.csv
 python -m rgannotator rhythm -i expression.csv -o rhythm_cosinor.csv -m cosinor
 
 # Module 3: figures
-python -m rgannotator heatmap -i expression.csv -o heatmap.png
+python -m rgannotator pseudotime -i expression.csv -o pseudotime.png
 python -m rgannotator radar   -i expression.csv -o radar.svg -g CCA1,LHY,TOC1
 python -m rgannotator line    -i expression.csv -o line.svg -g CCA1,LHY
 ```
@@ -114,15 +114,15 @@ python -m rgannotator rhythm -i expression.csv -o result.csv -ZT -zt0 0 -int 4 -
 
 All plots share the same expression-CSV input and time-parsing rules as module 2, and annotate every profile with the JTK test (P, fold change, peak CT, rhythmic `+`/`-` tag).
 
-### `heatmap` — circadian heatmap (CT as pseudotime)
+### `pseudotime` — circadian pseudotime plot (CT as pseudotime)
 
 Profiles are folded onto one 0–24 h day, cubic-interpolated, Gaussian-smoothed and row Z-scored; genes are ordered by peak phase (`-order peak`) or hierarchical clustering (`-order cluster`). Optional: duplicate the cycle for wrap-around display (`-nc 2`), mark genes of interest on the left (`-g`), attach a category annotation strip (`-anno`), or filter rows (`-gl`).
 
 ```bash
-python -m rgannotator heatmap -i expression.csv -o heatmap.png -nc 2 -order peak -g MsLHY -anno gene_categories.csv
+python -m rgannotator pseudotime -i expression.csv -o pseudotime.png -nc 2 -order peak -g MsLHY -anno gene_categories.csv
 ```
 
-![heatmap example](example/output/heatmap.png)
+![pseudotime example](example/output/pseudotime.png)
 
 ### `radar` — 24 h radar (polar) plot
 
@@ -150,7 +150,7 @@ Expression CSV: first column = gene ID, remaining columns = expression values (T
 
 Two time layouts:
 
-**CT mode (auto-detected)** — headers encode circadian time directly; `_n` suffixes denote replicates. Multi-day labels (e.g. `CT28`) wrap automatically where the plot needs one day (radar/heatmap) and are kept absolute for statistics and line plots:
+**CT mode (auto-detected)** — headers encode circadian time directly; `_n` suffixes denote replicates. Multi-day labels (e.g. `CT28`) wrap automatically where the plot needs one day (radar/pseudotime) and are kept absolute for statistics and line plots:
 
 ```csv
 Gene,CT0,CT4,CT8,CT12,CT16,CT20,CT24,CT28,CT32
@@ -190,7 +190,7 @@ RGAnnotator/
 │   ├── cli.py            # unified command-line interface
 │   ├── identify.py       # module 1: reciprocal BLAST identification
 │   ├── rhythm.py         # module 2: JTK_CYCLE + Cosinor engines
-│   ├── heatmap.py        # module 3: circadian heatmap
+│   ├── pseudotime.py     # module 3: circadian pseudotime plot
 │   ├── radar.py          # module 3: 24 h radar plot
 │   ├── lineplot.py       # module 3: time-course line plot
 │   ├── timeparse.py      # shared CT/manual time parsing

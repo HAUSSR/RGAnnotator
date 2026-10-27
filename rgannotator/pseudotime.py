@@ -1,4 +1,4 @@
-"""Module 3a - circadian expression heatmap with CT as pseudotime.
+"""Module 3a - circadian pseudotime expression plot (CT/ZT as pseudotime).
 
 Rows are genes (optionally ordered by peak time or hierarchical clustering),
 columns are circadian time. Profiles are period-folded onto 0-24 h, cubic-
@@ -138,11 +138,11 @@ def make_category_colors(categories):
 
 
 # ========================
-# 6. Single heatmap panel
+# 6. Single pseudotime panel
 # ========================
-def plot_heatmap_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
+def plot_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
                        annotation_df=None, anno_col=None, mark_genes=None,
-                       title="Heatmap", cmap_name="RdBu_r", z_clip=2.5, n_cycle=2):
+                       title="Pseudotime", cmap_name="RdBu_r", z_clip=2.5, n_cycle=2):
     if n_cycle == 2:
         heat_z_plot = np.concatenate([heat_z, heat_z], axis=1)
     else:
@@ -267,7 +267,7 @@ def plot_heatmap_panel(fig, gs_cell, heat_z, gene_names, times_smooth,
 # ========================
 # 7. Main
 # ========================
-def run_heatmap(args):
+def run_pseudotime(args):
     use_ct = not args.zt_mode
     input_files = [f.strip() for f in args.input.split(",")]
     n_files = len(input_files)
@@ -340,7 +340,7 @@ def run_heatmap(args):
         order = order_genes(z_matrix, times_smooth, args.order_by)
 
         base_name = os.path.splitext(os.path.basename(filepath))[0]
-        im, cat_colors, cats = plot_heatmap_panel(
+        im, cat_colors, cats = plot_panel(
             fig, gs_cell,
             z_matrix[order], gene_names[order], times_smooth,
             annotation_df=annotation_df, anno_col=anno_col,
@@ -378,7 +378,7 @@ def run_heatmap(args):
                                     transform=lax.transAxes, clip_on=False))
             lax.text(0.20, y + dy * 0.35, cat, transform=lax.transAxes, va="center", fontsize=7)
 
-    fig.suptitle("Circadian Heatmap", fontsize=14, fontweight="bold", y=0.98)
+    fig.suptitle("Circadian Pseudotime Expression", fontsize=14, fontweight="bold", y=0.98)
     plt.tight_layout(rect=[0, 0, 1, 0.95])
 
     save_figure(fig, args.output, png_dpi=1200)
@@ -390,9 +390,9 @@ def run_heatmap(args):
 
 def build_parser(add_help=True):
     parser = argparse.ArgumentParser(
-        prog="rgannotator heatmap",
+        prog="rgannotator pseudotime",
         add_help=add_help,
-        description="Module 3a - circadian expression heatmap (CT as pseudotime)",
+        description="Module 3a - circadian pseudotime expression plot (CT as pseudotime)",
     )
     parser.add_argument("-i", "--input", required=True, help="Input CSV, comma-separated for multiple panels")
     parser.add_argument("-o", "--output", required=True, help="Output image (PNG/SVG/PDF)")
@@ -418,7 +418,7 @@ def build_parser(add_help=True):
 
 def main(argv=None):
     args = build_parser().parse_args(argv)
-    run_heatmap(args)
+    run_pseudotime(args)
 
 
 if __name__ == "__main__":

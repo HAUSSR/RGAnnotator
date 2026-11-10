@@ -207,6 +207,6 @@ RGAnnotator/
 
 ## Citation & license
 
-If RGAnnotator helps your research, please cite: *to be added upon publication*.
+Citation：
 
 Released under the MIT License — see [LICENSE](LICENSE).
